@@ -1,0 +1,38 @@
+{
+  "name": "pdf-sticher",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "bin": {
+    "pdf-sticher": "dist/index.js"
+  },
+  "scripts": {
+    "start": "bun run src/index.ts",
+    "package": "bun build src/index.ts --compile --outfile bin/pdf-sticher.exe",
+    "test": "jest --config=jest.config.js",
+    "test:watch": "jest --watch --config=jest.config.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@mdit/plugin-img-size": "^0.22.3",
+    "commander": "^14.0.2",
+    "markdown-it": "^14.1.0",
+    "markdown-it-image-size": "^15.0.1",
+    "markdown-it-mathjax3": "^5.2.0",
+    "pdf-lib": "^1.17.1",
+    "puppeteer": "^24.29.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/markdown-it": "^14.1.2",
+    "@types/node": "^24.10.1",
+    "@types/pdf-parse": "^1.1.5",
+    "jest": "^30.2.0",
+    "pdf-parse": "^2.4.5",
+    "ts-jest": "^29.4.5",
+    "typescript": "^5.9.3"
+  }
+}
