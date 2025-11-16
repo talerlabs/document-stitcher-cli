@@ -9,7 +9,9 @@
     "package:linux": "bun build src/index.ts --compile --outfile bin/pdf-sticher",
     "test": "jest --config=jest.config.js",
     "test:watch": "jest --watch --config=jest.config.js",
-    "lint": "bunx eslint"
+    "lint": "bunx eslint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "keywords": [],
   "author": "",
@@ -37,6 +39,7 @@
     "jest": "^30.2.0",
     "jiti": "^2.6.1",
     "pdf-parse": "^2.4.5",
+    "prettier": "^3.6.2",
     "ts-jest": "^29.4.5",
     "typescript": "^5.9.3"
   }

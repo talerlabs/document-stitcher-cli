@@ -1,32 +1,33 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono&display=swap" rel="stylesheet">
-  <style>
-{{css}}
-  </style>
-</head>
-<body>
-  <div class="markdown-body">
-    {{content}}
-  </div>
-  
-  <!-- MathJax for rendering mathematical expressions -->
-  <script>
-    // Load MathJax if it's not already loaded
-    if (typeof MathJax === 'undefined') {
-      const script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
-      script.async = true;
-      script.integrity = 'sha384-0s9vVw2h0v9JQ+J0J8J4h0h6P5v1Y+Qp6o0f4Pp9g8JlEhBL+5U+5OJ4Ue1LkF';
-      script.crossOrigin = 'anonymous';
-      document.head.appendChild(script);
-    }
-  </script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      {{css}}
+    </style>
+  </head>
+  <body>
+    <div class="markdown-body">{{content}}</div>
+
+    <!-- MathJax for rendering mathematical expressions -->
+    <script>
+      // Load MathJax if it's not already loaded
+      if (typeof MathJax === "undefined") {
+        const script = document.createElement("script");
+        script.src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
+        script.async = true;
+        script.integrity = "sha384-0s9vVw2h0v9JQ+J0J8J4h0h6P5v1Y+Qp6o0f4Pp9g8JlEhBL+5U+5OJ4Ue1LkF";
+        script.crossOrigin = "anonymous";
+        document.head.appendChild(script);
+      }
+    </script>
+  </body>
 </html>

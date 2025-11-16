@@ -1,11 +1,11 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import { execSync } from 'child_process';
-const { PDFParse } = require('pdf-parse');
+import * as fs from "fs";
+import * as path from "path";
+import { execSync } from "child_process";
+const { PDFParse } = require("pdf-parse");
 
-describe('Markdown to PDF CLI Integration Tests', () => {
-  const testDir = path.join(__dirname, '..', '..', 'test-output');
-  const cliPath = path.join(__dirname, '..', '..', 'dist', 'index.js');
+describe("Markdown to PDF CLI Integration Tests", () => {
+  const testDir = path.join(__dirname, "..", "..", "test-output");
+  const cliPath = path.join(__dirname, "..", "..", "dist", "index.js");
 
   beforeAll(() => {
     // Create test output directory
@@ -17,18 +17,18 @@ describe('Markdown to PDF CLI Integration Tests', () => {
   afterAll(() => {
     // Clean up test output directory (keep complex output for debugging if test fails)
     if (fs.existsSync(testDir)) {
-      const complexPdf = path.join(testDir, 'complex-output.pdf');
+      const complexPdf = path.join(testDir, "complex-output.pdf");
       if (fs.existsSync(complexPdf)) {
-        console.log('Keeping complex-output.pdf for debugging');
+        console.log("Keeping complex-output.pdf for debugging");
       } else {
         fs.rmSync(testDir, { recursive: true, force: true });
       }
     }
   });
 
-  test('should resolve relative links in markdown', () => {
-    const inputMd = path.join(testDir, 'test-links.md');
-    const outputPdf = path.join(testDir, 'links-output.pdf');
+  test("should resolve relative links in markdown", () => {
+    const inputMd = path.join(testDir, "test-links.md");
+    const outputPdf = path.join(testDir, "links-output.pdf");
 
     // Create test markdown with relative links
     const testContent = `
@@ -42,7 +42,7 @@ Also an [absolute link](https://example.com) that should remain unchanged.
     fs.writeFileSync(inputMd, testContent);
 
     // Run the CLI
-    execSync(`node "${cliPath}" "${inputMd}" "${outputPdf}"`, { stdio: 'inherit' });
+    execSync(`node "${cliPath}" "${inputMd}" "${outputPdf}"`, { stdio: "inherit" });
 
     // Verify PDF was created and has content
     expect(fs.existsSync(outputPdf)).toBe(true);
@@ -50,9 +50,9 @@ Also an [absolute link](https://example.com) that should remain unchanged.
     expect(stats.size).toBeGreaterThan(1000); // PDF should be at least 1KB
   });
 
-  test('should embed PDFs when referenced', () => {
-    const inputMd = path.join(testDir, 'test-embed.md');
-    const outputPdf = path.join(testDir, 'embed-output.pdf');
+  test("should embed PDFs when referenced", () => {
+    const inputMd = path.join(testDir, "test-embed.md");
+    const outputPdf = path.join(testDir, "embed-output.pdf");
 
     // Create test markdown with PDF reference
     const testContent = `
@@ -68,7 +68,7 @@ End of document.
     fs.writeFileSync(inputMd, testContent);
 
     // Run the CLI
-    execSync(`node "${cliPath}" "${inputMd}" "${outputPdf}"`, { stdio: 'inherit' });
+    execSync(`node "${cliPath}" "${inputMd}" "${outputPdf}"`, { stdio: "inherit" });
 
     // Verify PDF was created and has content
     expect(fs.existsSync(outputPdf)).toBe(true);
@@ -76,32 +76,32 @@ End of document.
     expect(stats.size).toBeGreaterThan(1000); // PDF should be at least 1KB
   });
 
-  test('should handle empty markdown file', () => {
-    const inputMd = path.join(testDir, 'empty.md');
-    const outputPdf = path.join(testDir, 'empty-output.pdf');
+  test("should handle empty markdown file", () => {
+    const inputMd = path.join(testDir, "empty.md");
+    const outputPdf = path.join(testDir, "empty-output.pdf");
 
     // Create empty markdown file
-    fs.writeFileSync(inputMd, '');
+    fs.writeFileSync(inputMd, "");
 
     // Run the CLI - this should fail gracefully
     expect(() => {
-      execSync(`node "${cliPath}" "${inputMd}" "${outputPdf}"`, { stdio: 'inherit' });
+      execSync(`node "${cliPath}" "${inputMd}" "${outputPdf}"`, { stdio: "inherit" });
     }).toThrow();
   });
 
-  test('should handle non-existent input file', () => {
-    const inputMd = path.join(testDir, 'nonexistent.md');
-    const outputPdf = path.join(testDir, 'error-output.pdf');
+  test("should handle non-existent input file", () => {
+    const inputMd = path.join(testDir, "nonexistent.md");
+    const outputPdf = path.join(testDir, "error-output.pdf");
 
     // Run the CLI - this should fail
     expect(() => {
-      execSync(`node "${cliPath}" "${inputMd}" "${outputPdf}"`, { stdio: 'inherit' });
+      execSync(`node "${cliPath}" "${inputMd}" "${outputPdf}"`, { stdio: "inherit" });
     }).toThrow();
   });
 
-  test('should generate PDF with complex content including page breaks, tables, and long text', async () => {
-    const inputMd = path.join(testDir, 'complex-content.md');
-    const outputPdf = path.join(testDir, 'complex-output.pdf');
+  test("should generate PDF with complex content including page breaks, tables, and long text", async () => {
+    const inputMd = path.join(testDir, "complex-content.md");
+    const outputPdf = path.join(testDir, "complex-output.pdf");
 
     // Create comprehensive test markdown with all features
     const testContent = `
@@ -129,11 +129,11 @@ This text should appear on a new page after the horizontal rule.
 
 ## Long Text Content
 
-${'This is a very long paragraph that should demonstrate text wrapping and pagination. '.repeat(50)}
+${"This is a very long paragraph that should demonstrate text wrapping and pagination. ".repeat(50)}
 
 ### More Content
 
-${'Additional content to ensure multiple pages. '.repeat(25)}
+${"Additional content to ensure multiple pages. ".repeat(25)}
 
 ## Images
 
@@ -183,14 +183,14 @@ This content appears on the final page to test multi-page documents.
     fs.writeFileSync(inputMd, testContent);
 
     // Run the CLI
-    execSync(`node "${cliPath}" "${inputMd}" "${outputPdf}"`, { stdio: 'inherit' });
+    execSync(`node "${cliPath}" "${inputMd}" "${outputPdf}"`, { stdio: "inherit" });
 
     // Verify PDF was created
     expect(fs.existsSync(outputPdf)).toBe(true);
 
     // Use external script to verify PDF content (avoids Jest ESM issues)
-    const verifyScript = path.join(__dirname, '..', 'verify-pdf.js');
-    const result = execSync(`node "${verifyScript}" "${outputPdf}"`, { encoding: 'utf8' });
+    const verifyScript = path.join(__dirname, "..", "verify-pdf.js");
+    const result = execSync(`node "${verifyScript}" "${outputPdf}"`, { encoding: "utf8" });
     const verification = JSON.parse(result);
 
     // Verify the verification was successful
@@ -212,9 +212,9 @@ This content appears on the final page to test multi-page documents.
     expect(verification.textLength).toBeGreaterThan(2000);
 
     // Verify that the PDF contains the expected table data
-    expect(verification.text).toContain('Page Breaks');
-    expect(verification.text).toContain('Images');
-    expect(verification.text).toContain('Tables');
-    expect(verification.text).toContain('Long Text');
+    expect(verification.text).toContain("Page Breaks");
+    expect(verification.text).toContain("Images");
+    expect(verification.text).toContain("Tables");
+    expect(verification.text).toContain("Long Text");
   });
 });
