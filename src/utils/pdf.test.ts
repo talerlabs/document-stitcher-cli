@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { PDFDocument } from "pdf-lib";
-import puppeteer from "puppeteer";
+import puppeteer, { Browser } from "puppeteer";
 import { Chunk } from "../types";
 import * as pdf from "./pdf";
 import { mock, spyOn, expect, describe, test, afterEach, it, Mock } from "bun:test";
@@ -44,8 +44,8 @@ describe("pdf utils", () => {
         newPage: mock().mockResolvedValue(mockPage),
         close: mock(),
       };
-      (puppeteer.launch as Mock<any>).mockResolvedValue(mockBrowser);
-      const readFileMock = fs.readFileSync as Mock<any>;
+      (puppeteer.launch as Mock<typeof puppeteer.launch>).mockResolvedValue(mockBrowser as unknown as Browser);
+      const readFileMock = fs.readFileSync as Mock<typeof fs.readFileSync>;
       readFileMock.mockReturnValueOnce(`<!doctype html>
 <html lang="en">
   <head>
@@ -141,9 +141,9 @@ describe("pdf utils", () => {
         getPageIndices: mock().mockReturnValue([0, 1]),
         getPageCount: mock().mockReturnValue(2),
       };
-      (PDFDocument.create as Mock<any>).mockResolvedValue(mockPdfDoc);
-      (PDFDocument.load as Mock<any>).mockResolvedValue(mockPdfDoc);
-      (fs.promises.readFile as Mock<any>).mockResolvedValue(new Uint8Array());
+      (PDFDocument.create as Mock<typeof PDFDocument.create>).mockResolvedValue(mockPdfDoc as unknown as PDFDocument);
+      (PDFDocument.load as Mock<typeof PDFDocument.load>).mockResolvedValue(mockPdfDoc as unknown as PDFDocument);
+      (fs.promises.readFile as Mock<typeof fs.promises.readFile>).mockResolvedValue(Buffer.from("data"));
 
       const pdfSources = [{ path: "/path/to/1.pdf" }, { path: "/path/to/2.pdf" }];
       await pdf.mergePdfs(pdfSources);
@@ -164,9 +164,9 @@ describe("pdf utils", () => {
         getPageIndices: mock().mockReturnValue([0, 1, 2, 3]),
         getPageCount: mock().mockReturnValue(4),
       };
-      (PDFDocument.create as Mock<any>).mockResolvedValue(mockPdfDoc);
-      (PDFDocument.load as Mock<any>).mockResolvedValue(mockPdfDoc);
-      (fs.promises.readFile as Mock<any>).mockResolvedValue(new Uint8Array());
+      (PDFDocument.create as Mock<typeof PDFDocument.create>).mockResolvedValue(mockPdfDoc as unknown as PDFDocument);
+      (PDFDocument.load as Mock<typeof PDFDocument.load>).mockResolvedValue(mockPdfDoc as unknown as PDFDocument);
+      (fs.promises.readFile as Mock<typeof fs.promises.readFile>).mockResolvedValue(Buffer.from("data"));
 
       const pdfSources = [
         {
@@ -187,7 +187,7 @@ describe("pdf utils", () => {
 
   describe("processChunksToPdfSources", () => {
     test("should process chunks and return PDF sources", async () => {
-      (fs.promises.access as Mock<any>).mockResolvedValue(true);
+      (fs.promises.access as Mock<typeof fs.promises.access>).mockResolvedValue();
       const chunks: Chunk[] = [
         { type: "pdf", path: "1.pdf", pageOptions: { include: [1] } },
         { type: "markdown", content: "## Hello" },
@@ -202,7 +202,7 @@ describe("pdf utils", () => {
     });
 
     test("should warn when a PDF file is not found", async () => {
-      (fs.promises.access as Mock<any>).mockRejectedValue(new Error("File not found"));
+      (fs.promises.access as Mock<typeof fs.promises.access>).mockRejectedValue(new Error("File not found"));
       const consoleWarnSpy = spyOn(console, "warn").mockImplementation(() => {});
 
       const chunks: Chunk[] = [{ type: "pdf", path: "nonexistent.pdf" }];
