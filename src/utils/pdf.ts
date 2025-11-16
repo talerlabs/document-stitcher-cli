@@ -5,7 +5,12 @@ import * as path from 'path';
 import { Chunk, PdfSource } from '../types';
 import { convertMarkdownToHtml, resolveLinks } from './markdown';
 
-
+/**
+ * Converts HTML content to a PDF file.
+ * 
+ * @param html 
+ * @param outputFilePath 
+ */
 export async function convertHtmlToPdf(html: string, outputFilePath: string): Promise<void> {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
@@ -27,6 +32,12 @@ export async function convertHtmlToPdf(html: string, outputFilePath: string): Pr
   await browser.close();
 }
 
+/**
+ * Merges multiple PDFs into a single PDF.
+ * 
+ * @param pdfSources 
+ * @returns 
+ */
 export async function mergePdfs(pdfSources: PdfSource[]): Promise<Uint8Array> {
   const mergedPdf = await PDFDocument.create();
 
