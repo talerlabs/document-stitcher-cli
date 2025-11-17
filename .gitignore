@@ -89,8 +89,8 @@ tmp/
 
 # PDF output files
 *.pdf
-!dummy.pdf  # Keep the test dummy PDF
-!tests/fixtures/pdf/*.pdf  # Keep fixture PDFs
+# Keep fixture PDFs
+!tests/fixtures/pdf/**
 
 # IDE specific files
 .vscode/*
