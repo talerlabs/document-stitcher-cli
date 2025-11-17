@@ -10,12 +10,12 @@ describe("markdown", () => {
   describe("resolveLinks", () => {
     const baseDir = "/test/dir";
 
-    test("should resolve relative links to absolute file URLs", () => {
-      const markdown = "[link](./test.md)";
+    test("should resolve relative pdf links to absolute file URLs", () => {
+      const markdown = "![link](./test.pdf)";
       const result = resolveLinks(markdown, baseDir);
-      const expectedPath = path.resolve(baseDir, "./test.md");
+      const expectedPath = path.resolve(baseDir, "./test.pdf");
       const expectedUrl = "file://" + expectedPath.replace(/\\/g, "/");
-      expect(result).toBe(`[link](${expectedUrl})`);
+      expect(result).toBe(`![link](${expectedUrl})`);
     });
 
     test("should not change absolute links", () => {

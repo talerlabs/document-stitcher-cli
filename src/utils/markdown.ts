@@ -22,9 +22,18 @@ const md = new MarkdownIt({
  * @returns
  */
 export function resolveLinks(markdown: string, baseDir: string): string {
-  // Regex to match markdown links: [text](url)
+  // Only resolve non-absolute links that point to PDFs.
+  // Image links are of the form `![alt](...)`. We skip image links UNLESS they
+  // point to a PDF (images that reference PDFs should still be resolved).
   const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
-  return markdown.replace(linkRegex, (match, text, url) => {
+  return markdown.replace(linkRegex, (match, text, url, offset, original) => {
+    const isImage = offset > 0 && original[offset - 1] === "!";
+    const isPdf = /\.pdf($|\?|#)/i.test(url);
+
+    // If this is an image and NOT a PDF, leave it alone. If it's an image
+    // that references a PDF, resolve it like a normal link.
+    if (isImage && !isPdf) return match;
+
     // Skip if already absolute (starts with http, https, file://, or /)
     if (
       url.startsWith("http://") ||
@@ -34,15 +43,16 @@ export function resolveLinks(markdown: string, baseDir: string): string {
     ) {
       return match;
     }
-    // Resolve relative path
+
+    // Resolve relative path and return an absolute file:// URL
     const resolvedPath = path.resolve(baseDir, url);
-    // Convert to file:// URL
-    const fileUrl = "file://" + resolvedPath.replace(/\\/g, "/");
-    return `[${text}](${fileUrl})`;
+    const absPath = resolvedPath.replace(/\\/g, "/");
+    return `[${text}](file://${absPath})`;
   });
 }
 
 function applyPagebreaks(markdown: string): string {
+  // Emit an inline-styled div to force a page break when printing/PDF
   return markdown.replace(/\\pagebreak/g, '<div style="page-break-after: always;"></div>');
 }
 

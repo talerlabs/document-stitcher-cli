@@ -15,14 +15,38 @@ import templateFile from "../templates/base.html" with { type: "file" };
  * @param html
  * @param outputFilePath
  */
-export async function convertHtmlToPdf(html: string, outputFilePath: string): Promise<void> {
+export async function convertHtmlToPdf(
+  html: string,
+  outputFilePath: string,
+  debugDumpHtml: boolean = false,
+  baseDir?: string
+): Promise<void> {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
   // @ts-expect-error CSS import fails here unfortunately
   const template = fs.readFileSync(templateFile, "utf-8");
   const css = fs.readFileSync(defaultCssFile, "utf-8");
-  const finalHtml = template.replace("{{content}}", html).replace("{{css}}", css);
+  let finalHtml = template.replace("{{content}}", html).replace("{{css}}", css);
+
+  // Determine a base URL for resolving relative resources (images, etc).
+  if (baseDir) {
+    const baseUrl = "file://" + path.resolve(baseDir).replace(/\\/g, "/") + "/";
+    // Insert a <base> tag so relative URLs resolve against the markdown directory.
+    finalHtml = finalHtml.replace(/<head>/i, `<head><base href="${baseUrl}">`);
+  }
+
+  // If debugDumpHtml is enabled, write the intermediate HTML next to the output PDF
+  // AFTER any modifications (like inserting <base>) so the dumped HTML matches
+  // what Puppeteer will actually render.
+  if (debugDumpHtml) {
+    try {
+      const htmlPath = outputFilePath.replace(/\.pdf$/i, ".html");
+      fs.writeFileSync(htmlPath, finalHtml, "utf-8");
+    } catch (err) {
+      console.warn("Warning: failed to write debug HTML:", err);
+    }
+  }
 
   await page.setContent(finalHtml, { waitUntil: "networkidle0" });
 
@@ -78,7 +102,8 @@ export async function mergePdfs(pdfSources: PdfSource[]): Promise<Uint8Array> {
 export async function processChunksToPdfSources(
   chunks: Chunk[],
   inputPath: string,
-  tmpDir: string
+  tmpDir: string,
+  debugDumpHtml: boolean = false
 ): Promise<PdfSource[]> {
   const pdfsToMerge: PdfSource[] = [];
   let tempPdfCounter = 0;
@@ -98,7 +123,7 @@ export async function processChunksToPdfSources(
       const resolvedContent = resolveLinks(chunk.content, path.dirname(inputPath));
       const html = convertMarkdownToHtml(resolvedContent);
       const tempPdfPath = path.join(tmpDir, `temp_${tempPdfCounter++}.pdf`);
-      await convertHtmlToPdf(html, tempPdfPath);
+      await convertHtmlToPdf(html, tempPdfPath, debugDumpHtml, path.dirname(inputPath));
       pdfsToMerge.push({ path: tempPdfPath });
     }
   }
