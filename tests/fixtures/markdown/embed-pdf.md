@@ -2,7 +2,6 @@
 
 This document references a local PDF that should be merged into the output. The asset is `./embeddable_fixture.pdf`.
 
-
 Embedded PDF link:
 
 ![Local PDF](./embeddable_fixture.pdf)

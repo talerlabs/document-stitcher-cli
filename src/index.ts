@@ -47,7 +47,10 @@ program
   .version("1.0.0")
   .option("--debug-html", "Write intermediate HTML files next to generated PDFs")
   .argument("<input>", "Path to the markdown file")
-  .argument("[output]", "Path to the output PDF file (optional, defaults to <markdown-name>-generated.pdf)")
+  .argument(
+    "[output]",
+    "Path to the output PDF file (optional, defaults to <markdown-name>-generated.pdf)"
+  )
   .action(async (input: string, output?: string, options?: { debugHtml?: boolean }) => {
     try {
       // If output is not provided, generate default path

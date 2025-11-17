@@ -23,10 +23,7 @@ export async function convertHtmlToPdf(
   baseDir?: string
 ): Promise<void> {
   const browser = await puppeteer.launch({
-    args: [
-      "--allow-file-access-from-files",
-      "--enable-local-file-accesses",
-    ],
+    args: ["--allow-file-access-from-files", "--enable-local-file-accesses"],
   });
   const page = await browser.newPage();
 

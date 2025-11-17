@@ -5,12 +5,14 @@ This document exercises headings, lists, code blocks, tables and links.
 ## Headings
 
 # H1
+
 ## H2
+
 ### H3
 
 ## Paragraphs and Inline Styling
 
-This is a paragraph with **bold**, *italic*, and `inline code`.
+This is a paragraph with **bold**, _italic_, and `inline code`.
 
 ## Lists
 
@@ -31,6 +33,6 @@ export function add(a: number, b: number) {
 
 ## Table
 
-| A | B | C |
-| - | - | - |
-| 1 | 2 | 3 |
+| A   | B   | C   |
+| --- | --- | --- |
+| 1   | 2   | 3   |

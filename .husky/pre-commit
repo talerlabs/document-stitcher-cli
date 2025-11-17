@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "Running formatter..."
+bun run format
+
+echo "Staging formatted files..."
+git add -A
+
+echo "Running linter..."
+bun run lint
+RESULT=$?
+if [ $RESULT -ne 0 ]; then
+  echo "Linting failed. Aborting commit."
+  exit $RESULT
+fi
+
+exit 0

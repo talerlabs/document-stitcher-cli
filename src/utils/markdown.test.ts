@@ -1,10 +1,6 @@
 import { describe, test, expect } from "bun:test";
 import * as path from "path";
-import {
-  resolveLinks,
-  convertMarkdownToHtml,
-  parseMarkdownIntoChunks,
-} from "./markdown";
+import { resolveLinks, convertMarkdownToHtml, parseMarkdownIntoChunks } from "./markdown";
 
 describe("markdown", () => {
   describe("resolveLinks", () => {
@@ -80,7 +76,9 @@ describe("markdown", () => {
     test("should handle pdf links with include options", () => {
       const markdown = "![pdf =3,4](./test.pdf)";
       const result = parseMarkdownIntoChunks(markdown);
-      expect(result).toEqual([{ type: "pdf", path: "./test.pdf", pageOptions: { include: [3, 4] } }]);
+      expect(result).toEqual([
+        { type: "pdf", path: "./test.pdf", pageOptions: { include: [3, 4] } },
+      ]);
     });
 
     test("should throw error if both skip and include are provided", () => {
