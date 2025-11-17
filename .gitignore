@@ -90,7 +90,7 @@ tmp/
 # PDF output files
 *.pdf
 # Keep fixture PDFs
-!tests/fixtures/pdf/**
+!tests/fixtures/**
 !test-docs/**/*.pdf
 
 # IDE specific files
