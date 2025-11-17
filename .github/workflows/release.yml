@@ -1,0 +1,117 @@
+name: Release from Artifacts
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to create (e.g. v1.2.3)"
+        required: true
+      name:
+        description: "Release name (optional)"
+        required: false
+      body:
+        description: "Release body (optional)"
+        required: false
+      draft:
+        description: "Create as draft? (true/false)"
+        required: false
+        default: "false"
+      prerelease:
+        description: "Create as prerelease? (true/false)"
+        required: false
+        default: "false"
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Find latest successful "Build and Test" run and list artifacts
+        id: find_artifacts
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const workflowName = 'Build and Test';
+            const runs = await github.rest.actions.listWorkflowRunsForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 50,
+            });
+            const run = runs.data.workflow_runs.find(r => r.name === workflowName && r.conclusion === 'success');
+            if (!run) {
+              core.setFailed('No recent successful "Build and Test" workflow run found.');
+              return;
+            }
+            const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: run.id,
+            });
+            const fs = require('fs');
+            fs.writeFileSync('artifacts.json', JSON.stringify({run_id: run.id, artifacts: artifacts.data.artifacts}, null, 2));
+            core.setOutput('run_id', run.id);
+
+      - name: Download artifacts
+        run: |
+          set -e
+          echo "Artifacts file contents:" && cat artifacts.json
+          mkdir -p downloaded_artifacts
+          node -e "
+            const fs = require('fs');
+            const artifacts = JSON.parse(fs.readFileSync('artifacts.json','utf8')).artifacts;
+            const token = process.env.GITHUB_TOKEN;
+            const {spawnSync} = require('child_process');
+            for(const a of artifacts){
+              const url = a.archive_download_url;
+              const file = `downloaded_artifacts/${a.name}.zip`;
+              console.log('Downloading', a.name, '->', file);
+              const curl = spawnSync('curl', ['-L', '-H', `Authorization: token ${token}`, '-o', file, url], {stdio:'inherit'});
+              if(curl.status !== 0) process.exit(curl.status);
+              const unzip = spawnSync('unzip', ['-o', file, '-d', `downloaded_artifacts/${a.name}`], {stdio:'inherit'});
+              if(unzip.status !== 0) process.exit(unzip.status);
+            }
+          "
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ github.event.inputs.tag }}
+          release_name: ${{ github.event.inputs.name || github.event.inputs.tag }}
+          body: ${{ github.event.inputs.body || '' }}
+          draft: ${{ github.event.inputs.draft }}
+          prerelease: ${{ github.event.inputs.prerelease }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload extracted artifacts to release
+        run: |
+          set -e
+          echo "Uploading extracted files to release..."
+          UPLOAD_URL=${{ steps.create_release.outputs.upload_url }}
+          UPLOAD_URL=${UPLOAD_URL//\{*\}/}
+          for f in downloaded_artifacts/*; do
+            if [ -d "$f" ]; then
+              for file in "$f"/*; do
+                [ -f "$file" ] || continue
+                name=$(basename "$file")
+                echo "Uploading $file as $name"
+                curl -s -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Content-Type: application/octet-stream" --data-binary @"$file" "$UPLOAD_URL?name=$name"
+              done
+            else
+              if [ -f "$f" ]; then
+                name=$(basename "$f")
+                echo "Uploading $f as $name"
+                curl -s -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Content-Type: application/octet-stream" --data-binary @"$f" "$UPLOAD_URL?name=$name"
+              fi
+            fi
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
