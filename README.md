@@ -1,8 +1,8 @@
-# PDF Stitcher
+# Document Stitcher
 
-Sometimes you need to stitch some text and documents into a single PDF for submissions to online platforms. This tool helps you do that.
+Stitch together Markdown, images, and PDFs into a single printable PDF suitable for submissions, reports, and archives. Write content using familiar Markdown syntax and the tool will render the document, embed external PDFs, inline images when possible, and produce a final PDF ready for distribution.
 
-With power of markdown, you can create a completely ready submission document with any text editor and have any LLM generate the content for you.
+Author documents in any text editor or generate content with an LLM — the workflow stays the same: write Markdown, reference assets, and let the tool assemble the final PDF.
 
 ## Markdown Features
 
@@ -40,6 +40,24 @@ Embed PDFs that will be included in the final output:
 ```markdown
 ![PDF Document](path/to/document.pdf)
 ```
+
+### Skipping or Selecting Pages
+
+You can control which pages from an embedded PDF are included using simple operators in the image alt text. Page numbers are 1-indexed.
+
+- Skip pages: use `!=` followed by a comma-separated list of page numbers to exclude those pages. Example:
+
+```markdown
+![PDF Document !=1,2](path/to/document.pdf)
+```
+
+- Include pages: use `=` followed by a comma-separated list of page numbers to include only those pages. Example:
+
+```markdown
+![PDF Document =3,4](path/to/document.pdf)
+```
+
+You cannot specify both `!=` and `=` for the same PDF (the tool will throw an error).
 
 ## License
 
