@@ -1,4 +1,6 @@
 import * as path from "path";
+import * as fs from "fs";
+import { pathToFileURL } from "url";
 import MarkdownIt from "markdown-it";
 import mathjax3 from "markdown-it-mathjax3";
 import { imgSize } from "@mdit/plugin-img-size";
@@ -14,6 +16,37 @@ const md = new MarkdownIt({
   .use(mathjax3)
   .use(imgSize);
 
+// helper: try to inline a local image file as a data URI. Returns null on
+// any failure or if the URL is not a candidate for inlining.
+function tryInlineImage(relUrl: string, baseDir: string): string | null {
+  // Skip absolute or data URLs
+  if (/^(https?:|file:|data:|\/)/i.test(relUrl)) return null;
+
+  const filePath = path.resolve(baseDir, relUrl);
+  if (!fs.existsSync(filePath)) return null;
+
+  // Do not inline very large images (safeguard)
+  const MAX_INLINE_BYTES = 2 * 1024 * 1024; // 2MB
+  try {
+    const stat = fs.statSync(filePath);
+    if (stat.size > MAX_INLINE_BYTES) return null;
+    const buf = fs.readFileSync(filePath);
+    const ext = path.extname(filePath).slice(1).toLowerCase();
+    const mimeMap: Record<string, string> = {
+      jpg: "image/jpeg",
+      jpeg: "image/jpeg",
+      png: "image/png",
+      gif: "image/gif",
+      svg: "image/svg+xml",
+      webp: "image/webp",
+    };
+    const mime = mimeMap[ext] || (ext ? `image/${ext}` : "application/octet-stream");
+    return `data:${mime};base64,${buf.toString("base64")}`;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Resolves relative links in markdown to absolute file URLs based on the base directory.
  *
@@ -22,17 +55,31 @@ const md = new MarkdownIt({
  * @returns
  */
 export function resolveLinks(markdown: string, baseDir: string): string {
-  // Only resolve non-absolute links that point to PDFs.
-  // Image links are of the form `![alt](...)`. We skip image links UNLESS they
-  // point to a PDF (images that reference PDFs should still be resolved).
+  // Resolve non-absolute links (including images) to absolute file:// URLs.
+  // Previously image links were skipped unless they pointed to PDFs; convert
+  // images too so the HTML contains absolute `file://` URLs and Puppeteer can
+  // load local image files reliably.
   const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+
   return markdown.replace(linkRegex, (match, text, url, offset, original) => {
     const isImage = offset > 0 && original[offset - 1] === "!";
     const isPdf = /\.pdf($|\?|#)/i.test(url);
 
-    // If this is an image and NOT a PDF, leave it alone. If it's an image
-    // that references a PDF, resolve it like a normal link.
-    if (isImage && !isPdf) return match;
+    // If this is an image and NOT a PDF, try to inline it. If inlining
+    // fails, leave the markdown unchanged so `<base>` can resolve it later.
+    if (isImage && !isPdf) {
+      const dataUrl = tryInlineImage(url, baseDir);
+      if (dataUrl) {
+        // The regex match does not include the preceding '!' for image
+        // syntax, so the original string already contains the '!'. If we
+        // returned a replacement that also included '!' we'd end up with
+        // a double '!!' which renders as a literal '!' followed by the
+        // image. Return the bracketed image link only so the original
+        // '!' remains and the final markdown is correct.
+        return `[${text}](${dataUrl})`;
+      }
+      return match;
+    }
 
     // Skip if already absolute (starts with http, https, file://, or /)
     if (
@@ -44,10 +91,13 @@ export function resolveLinks(markdown: string, baseDir: string): string {
       return match;
     }
 
-    // Resolve relative path and return an absolute file:// URL
+    // Resolve relative path and return an absolute file:// URL for non-image
+    // links and for images that point to PDFs (we still need to resolve
+    // embedded PDF image links so the PDF embedding logic can find the file).
     const resolvedPath = path.resolve(baseDir, url);
-    const absPath = resolvedPath.replace(/\\/g, "/");
-    return `[${text}](file://${absPath})`;
+    // Use pathToFileURL to get a correctly-formed file URL (file:/// on Windows)
+    const fileUrl = pathToFileURL(resolvedPath).href;
+    return `[${text}](${fileUrl})`;
   });
 }
 

@@ -14,7 +14,7 @@ describe("markdown", () => {
       const markdown = "![link](./test.pdf)";
       const result = resolveLinks(markdown, baseDir);
       const expectedPath = path.resolve(baseDir, "./test.pdf");
-      const expectedUrl = "file://" + expectedPath.replace(/\\/g, "/");
+      const expectedUrl = require("url").pathToFileURL(expectedPath).href;
       expect(result).toBe(`![link](${expectedUrl})`);
     });
 

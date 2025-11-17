@@ -2,6 +2,7 @@ import puppeteer from "puppeteer";
 import { PDFDocument } from "pdf-lib";
 import * as fs from "fs";
 import * as path from "path";
+import { pathToFileURL } from "url";
 import { Chunk, PdfSource } from "../types";
 import { convertMarkdownToHtml, resolveLinks } from "./markdown";
 
@@ -21,7 +22,12 @@ export async function convertHtmlToPdf(
   debugDumpHtml: boolean = false,
   baseDir?: string
 ): Promise<void> {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    args: [
+      "--allow-file-access-from-files",
+      "--enable-local-file-accesses",
+    ],
+  });
   const page = await browser.newPage();
 
   // @ts-expect-error CSS import fails here unfortunately
@@ -31,7 +37,8 @@ export async function convertHtmlToPdf(
 
   // Determine a base URL for resolving relative resources (images, etc).
   if (baseDir) {
-    const baseUrl = "file://" + path.resolve(baseDir).replace(/\\/g, "/") + "/";
+    // Use pathToFileURL to produce a correct file:/// URL on all platforms
+    const baseUrl = pathToFileURL(path.resolve(baseDir) + path.sep).href;
     // Insert a <base> tag so relative URLs resolve against the markdown directory.
     finalHtml = finalHtml.replace(/<head>/i, `<head><base href="${baseUrl}">`);
   }
