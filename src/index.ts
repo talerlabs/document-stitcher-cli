@@ -42,9 +42,15 @@ program
   .description("Convert markdown files to PDF, resolving relative links and embedding PDFs")
   .version("1.0.0")
   .argument("<input>", "Path to the markdown file")
-  .argument("<output>", "Path to the output PDF file")
-  .action(async (input: string, output: string) => {
+  .argument("[output]", "Path to the output PDF file (optional, defaults to <markdown-name>-generated.pdf)")
+  .action(async (input: string, output?: string) => {
     try {
+      // If output is not provided, generate default path
+      if (!output) {
+        const inputDir = input.substring(0, input.lastIndexOf("/") + 1 || 0);
+        const inputBasename = input.substring(input.lastIndexOf("/") + 1).replace(/\.md$/, "");
+        output = `${inputDir}${inputBasename}-generated.pdf`;
+      }
       await convertMarkdownToPdf(input, output);
     } catch (error) {
       console.error("Error:", error);
