@@ -22,8 +22,16 @@ export async function convertHtmlToPdf(
   debugDumpHtml: boolean = false,
   baseDir?: string
 ): Promise<void> {
+  const defaultArgs = ["--allow-file-access-from-files", "--enable-local-file-accesses"];
+
+  // On many CI runners (including GitHub Actions) Chromium's sandbox is not
+  // available. Passing these flags avoids the "No usable sandbox" failure.
+  if (process.env.CI || process.env.GITHUB_ACTIONS) {
+    defaultArgs.push("--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage");
+  }
+
   const browser = await puppeteer.launch({
-    args: ["--allow-file-access-from-files", "--enable-local-file-accesses"],
+    args: defaultArgs,
   });
   const page = await browser.newPage();
 
