@@ -73,16 +73,16 @@ The CSS file will be applied to the HTML before PDF generation, giving you full 
 
 Here are some example PDFs generated from the test fixtures:
 
-- [Basic Markdown](test-output/integration/basic-generated.pdf) - Simple markdown rendering
-- [Combined Features](test-output/integration/combined-generated.pdf) - Multiple markdown features
-- [Embedded PDFs](test-output/integration/embed-pdf-generated.pdf) - PDF embedding functionality
-- [Images](test-output/integration/images-generated.pdf) - Image inclusion and sizing
-- [Math Expressions](test-output/integration/math-generated.pdf) - LaTeX math rendering
-- [Multi-page PDFs](test-output/integration/multi_page_full-generated.pdf) - Full PDF embedding
-- [Page Selection](test-output/integration/multi_page_include-generated.pdf) - Selective page inclusion
-- [Page Skipping](test-output/integration/multi_page_skip-generated.pdf) - Page exclusion
-- [Page Breaks](test-output/integration/pagebreaks-generated.pdf) - Manual page breaks
-- [Custom Theme](test-output/integration/themed-generated.pdf) - Colorful themed output
+- [Basic Markdown](tests/fixtures/pdf/basic-generated.pdf) - Simple markdown rendering
+- [Combined Features](tests/fixtures/pdf/combined-generated.pdf) - Multiple markdown features
+- [Embedded PDFs](tests/fixtures/pdf/embed-pdf-generated.pdf) - PDF embedding functionality
+- [Images](tests/fixtures/pdf/images-generated.pdf) - Image inclusion and sizing
+- [Math Expressions](tests/fixtures/pdf/math-generated.pdf) - LaTeX math rendering
+- [Multi-page PDFs](tests/fixtures/pdf/multi_page_full-generated.pdf) - Full PDF embedding
+- [Page Selection](tests/fixtures/pdf/multi_page_include-generated.pdf) - Selective page inclusion
+- [Page Skipping](tests/fixtures/pdf/multi_page_skip-generated.pdf) - Page exclusion
+- [Page Breaks](tests/fixtures/pdf/pagebreaks-generated.pdf) - Manual page breaks
+- [Custom Theme](tests/fixtures/pdf/themed-generated.pdf) - Colorful themed output
 
 ## License
 
