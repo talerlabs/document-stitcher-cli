@@ -81,12 +81,12 @@ describe("pdf utils", () => {
     </script>
   </body>
 </html>`);
-      readFileMock.mockReturnValueOnce("body { color: red; }");
 
       const html = "<p>Hello</p>";
       const outputFilePath = "/path/to/output.pdf";
+      const css = "body { color: red; }";
 
-      await pdf.convertHtmlToPdf(html, outputFilePath);
+      await pdf.convertHtmlToPdf(html, outputFilePath, css);
 
       expect(puppeteer.launch).toHaveBeenCalled();
       expect(mockBrowser.newPage).toHaveBeenCalled();
@@ -203,6 +203,9 @@ describe("pdf utils", () => {
   describe("processChunksToPdfSources", () => {
     test("should process chunks and return PDF sources", async () => {
       (fs.promises.access as Mock<typeof fs.promises.access>).mockResolvedValue();
+      // Mock readFileSync to return a CSS string
+      (fs.readFileSync as Mock<typeof fs.readFileSync>).mockReturnValue("body { color: blue; }");
+
       const chunks: Chunk[] = [
         { type: "pdf", path: "1.pdf", pageOptions: { include: [1] } },
         { type: "markdown", content: "## Hello" },
@@ -220,6 +223,9 @@ describe("pdf utils", () => {
       (fs.promises.access as Mock<typeof fs.promises.access>).mockRejectedValue(
         new Error("File not found")
       );
+      // Mock readFileSync to return a CSS string
+      (fs.readFileSync as Mock<typeof fs.readFileSync>).mockReturnValue("body { color: blue; }");
+
       const consoleWarnSpy = spyOn(console, "warn").mockImplementation(() => {});
 
       const chunks: Chunk[] = [{ type: "pdf", path: "nonexistent.pdf" }];

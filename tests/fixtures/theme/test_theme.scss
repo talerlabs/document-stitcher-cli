@@ -1,0 +1,171 @@
+body {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif !important;
+  margin: 40px !important;
+  padding: 30px !important;
+  border: 3px solid #ff6b6b !important;
+  border-radius: 15px !important;
+  color: #ffffff !important;
+}
+
+h1 {
+  color: #ffd93d !important;
+  text-decoration: none !important;
+  font-weight: bold !important;
+  margin-top: 1.5em !important;
+  margin-bottom: 0.5em !important;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3) !important;
+  font-size: 2.5em !important;
+}
+
+h2 {
+  color: #6bcf7f !important;
+  text-decoration: none !important;
+  font-weight: bold !important;
+  margin-top: 1.5em !important;
+  margin-bottom: 0.5em !important;
+  border-bottom: 3px solid #4ecdc4 !important;
+  padding-bottom: 0.3em !important;
+}
+
+h3 {
+  color: #4ecdc4 !important;
+  text-decoration: none !important;
+  font-weight: bold !important;
+  margin-top: 1.5em !important;
+  margin-bottom: 0.5em !important;
+}
+
+h4 {
+  color: #45b7d1 !important;
+  text-decoration: none !important;
+  font-weight: bold !important;
+  margin-top: 1.5em !important;
+  margin-bottom: 0.5em !important;
+}
+
+h5 {
+  color: #f9ca24 !important;
+  text-decoration: none !important;
+  font-weight: bold !important;
+  margin-top: 1.5em !important;
+  margin-bottom: 0.5em !important;
+}
+
+h6 {
+  color: #f0932b !important;
+  text-decoration: none !important;
+  font-weight: bold !important;
+  margin-top: 1.5em !important;
+  margin-bottom: 0.5em !important;
+}
+
+p {
+  line-height: 1.8 !important;
+  color: #ffffff !important;
+  text-align: justify !important;
+  margin-bottom: 1em !important;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+code {
+  background-color: #2d3748 !important;
+  border: 2px solid #e53e3e !important;
+  border-radius: 8px !important;
+  padding: 4px 8px !important;
+  font-family: "Fira Code", "Courier New", monospace !important;
+  color: #68d391 !important;
+  font-weight: bold !important;
+}
+
+pre {
+  background: linear-gradient(45deg, #2d3748, #4a5568) !important;
+  border: 2px solid #3182ce !important;
+  border-radius: 10px !important;
+  padding: 15px !important;
+  overflow-x: auto !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+pre code {
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  color: #9ae6b4 !important;
+}
+
+ul,
+ol {
+  margin-left: 20px !important;
+  line-height: 1.8 !important;
+}
+
+li {
+  margin-bottom: 0.5em !important;
+  color: #ffffff !important;
+}
+
+blockquote {
+  border-left: 6px solid #ffd93d !important;
+  padding-left: 15px !important;
+  font-style: italic !important;
+  color: #e2e8f0 !important;
+  background-color: rgba(255, 217, 61, 0.1) !important;
+  padding: 15px !important;
+  border-radius: 8px !important;
+  margin: 1em 0 !important;
+}
+
+a {
+  color: #63b3ed !important;
+  text-decoration: none !important;
+  font-weight: bold !important;
+  border-bottom: 2px solid #63b3ed !important;
+  transition: all 0.3s ease !important;
+}
+
+a:hover {
+  color: #4299e1 !important;
+  border-bottom-color: #4299e1 !important;
+}
+
+table {
+  border-collapse: collapse !important;
+  width: 100% !important;
+  margin-bottom: 1em !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+
+th,
+td {
+  border: 1px solid #4a5568 !important;
+  padding: 12px !important;
+  text-align: left !important;
+  color: #ffffff !important;
+}
+
+th {
+  background: linear-gradient(45deg, #667eea, #764ba2) !important;
+  font-weight: bold !important;
+  color: #ffffff !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+}
+
+tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+img {
+  max-width: 100% !important;
+  height: auto !important;
+  border: 3px solid #ffd93d !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+.markdown-body {
+  max-width: none !important;
+}

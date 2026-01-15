@@ -19,6 +19,7 @@ import templateFile from "../templates/base.html" with { type: "file" };
 export async function convertHtmlToPdf(
   html: string,
   outputFilePath: string,
+  css: string,
   debugDumpHtml: boolean = false,
   baseDir?: string
 ): Promise<void> {
@@ -37,7 +38,6 @@ export async function convertHtmlToPdf(
 
   // @ts-expect-error CSS import fails here unfortunately
   const template = fs.readFileSync(templateFile, "utf-8");
-  const css = fs.readFileSync(defaultCssFile, "utf-8");
   let finalHtml = template.replace("{{content}}", html).replace("{{css}}", css);
 
   // Determine a base URL for resolving relative resources (images, etc).
@@ -136,10 +136,18 @@ export async function processChunksToPdfSources(
   chunks: Chunk[],
   inputPath: string,
   tmpDir: string,
-  debugDumpHtml: boolean = false
+  debugDumpHtml: boolean = false,
+  themePath?: string
 ): Promise<PdfSource[]> {
   const pdfsToMerge: PdfSource[] = [];
   let tempPdfCounter = 0;
+
+  let css: string;
+  if (themePath) {
+    css = fs.readFileSync(themePath, "utf-8");
+  } else {
+    css = fs.readFileSync(defaultCssFile, "utf-8");
+  }
 
   for (const chunk of chunks) {
     if (chunk.type === "pdf") {
@@ -156,7 +164,7 @@ export async function processChunksToPdfSources(
       const resolvedContent = resolveLinks(chunk.content, path.dirname(inputPath));
       const html = convertMarkdownToHtml(resolvedContent);
       const tempPdfPath = path.join(tmpDir, `temp_${tempPdfCounter++}.pdf`);
-      await convertHtmlToPdf(html, tempPdfPath, debugDumpHtml, path.dirname(inputPath));
+      await convertHtmlToPdf(html, tempPdfPath, css, debugDumpHtml, path.dirname(inputPath));
       pdfsToMerge.push({ path: tempPdfPath });
     }
   }
