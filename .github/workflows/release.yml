@@ -137,4 +137,6 @@ jobs:
         run: choco pack publishing/chocolatey/document-stitcher.nuspec --outputdirectory .
 
       - name: Push to Chocolatey
-        run: choco push document-stitcher.${{ github.event.inputs.tag }}.TrimStart('v').nupkg --source https://push.chocolatey.org/ --api-key ${{ secrets.CHOCOLATEY_API_KEY }}
+        run: |
+          $version = '${{ github.event.inputs.tag }}'.TrimStart('v')
+          choco push document-stitcher.$version.nupkg --source https://push.chocolatey.org/ --api-key ${{ secrets.CHOCOLATEY_API_KEY }}
