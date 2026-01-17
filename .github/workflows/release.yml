@@ -110,3 +110,31 @@ jobs:
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  chocolatey:
+    runs-on: windows-latest
+    needs: create-release
+    if: contains(github.event.inputs.tag, 'v') && !github.event.inputs.prerelease
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download release asset
+        run: |
+          $release = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ github.event.inputs.tag }}" -Headers @{Authorization="token ${{ secrets.GITHUB_TOKEN }}"}
+          $asset = $release.assets | Where-Object { $_.name -eq 'document-stitcher.exe' }
+          if ($asset) {
+            Invoke-WebRequest -Uri $asset.browser_download_url -OutFile 'publishing/chocolatey/tools/document-stitcher.exe'
+          } else {
+            Write-Error "Asset not found"
+          }
+
+      - name: Update nuspec version
+        run: |
+          (Get-Content publishing/chocolatey/document-stitcher.nuspec) -replace '\$version\$', '${{ github.event.inputs.tag }}'.TrimStart('v') | Set-Content publishing/chocolatey/document-stitcher.nuspec
+
+      - name: Pack Chocolatey package
+        run: choco pack publishing/chocolatey/document-stitcher.nuspec --outputdirectory .
+
+      - name: Push to Chocolatey
+        run: choco push document-stitcher.${{ github.event.inputs.tag }}.TrimStart('v').nupkg --source https://push.chocolatey.org/ --api-key ${{ secrets.CHOCOLATEY_API_KEY }}

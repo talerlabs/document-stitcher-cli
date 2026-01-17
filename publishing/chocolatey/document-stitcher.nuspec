@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>document-stitcher</id>
+    <version>$version$</version>
+    <title>Document Stitcher</title>
+    <authors>Taler Labs</authors>
+    <description>Stitch together Markdown, images, and PDFs into a single printable PDF suitable for submissions, reports, and archives.</description>
+    <projectUrl>https://github.com/talerlabs/document-stitcher-cli</projectUrl>
+    <licenseUrl>https://github.com/talerlabs/document-stitcher-cli/blob/main/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <tags>markdown pdf cli tool</tags>
+    <releaseNotes>https://github.com/talerlabs/document-stitcher-cli/releases</releaseNotes>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>
