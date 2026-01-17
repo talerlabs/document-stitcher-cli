@@ -114,7 +114,7 @@ jobs:
   chocolatey:
     runs-on: windows-latest
     needs: create-release
-    if: contains(github.event.inputs.tag, 'v') && !github.event.inputs.prerelease
+    if: contains(github.event.inputs.tag, 'v') && github.event.inputs.prerelease != 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
