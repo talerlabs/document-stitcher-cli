@@ -71,7 +71,7 @@ export async function convertHtmlToPdf(
   maybeSetDefaultNavTimeout.setDefaultNavigationTimeout?.(navigationTimeout);
 
   try {
-    await page.setContent(finalHtml, { waitUntil: "networkidle2", timeout: navigationTimeout });
+    await page.setContent(finalHtml, { waitUntil: "networkidle0", timeout: navigationTimeout });
   } catch (err) {
     // If setContent times out, warn and continue: in CI some external requests
     // (fonts, images) may hang or be blocked and we still want to produce a PDF.
@@ -81,6 +81,15 @@ export async function convertHtmlToPdf(
     } else {
       throw err;
     }
+  }
+
+  // Wait for fonts to load before generating PDF
+  try {
+    // @ts-expect-error Suppressing type error for evaluate context
+    // eslint-disable-next-line no-undef
+    await page.evaluate(() => document.fonts.ready);
+  } catch (err) {
+    console.warn("Warning: failed to wait for fonts - continuing anyway:", err);
   }
 
   await page.pdf({
