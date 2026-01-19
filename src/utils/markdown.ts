@@ -4,6 +4,8 @@ import { pathToFileURL } from "url";
 import MarkdownIt from "markdown-it";
 import mathjax3 from "markdown-it-mathjax3";
 import { imgSize } from "@mdit/plugin-img-size";
+// @ts-expect-error No types available
+import attrs from "markdown-it-attrs";
 import { Chunk } from "../types";
 
 const md = new MarkdownIt({
@@ -14,6 +16,7 @@ const md = new MarkdownIt({
   xhtmlOut: true,
 })
   .use(mathjax3)
+  .use(attrs)
   .use(imgSize);
 
 // helper: try to inline a local image file as a data URI. Returns null on

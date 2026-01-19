@@ -125,11 +125,12 @@ describe("pdf utils", () => {
 </html>`;
       expect(mockPage.setContent).toHaveBeenCalledWith(expectedHtml, {
         timeout: 60000,
-        waitUntil: "networkidle2",
+        waitUntil: "networkidle0",
       });
       expect(mockPage.pdf).toHaveBeenCalledWith({
         path: outputFilePath,
         format: "A4",
+        preferCSSPageSize: true,
         printBackground: true,
       });
       expect(mockBrowser.close).toHaveBeenCalled();

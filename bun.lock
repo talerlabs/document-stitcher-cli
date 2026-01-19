@@ -8,6 +8,7 @@
         "@mdit/plugin-img-size": "^0.22.3",
         "commander": "^14.0.2",
         "markdown-it": "^14.1.0",
+        "markdown-it-attrs": "^4.3.1",
         "markdown-it-image-size": "^15.0.1",
         "markdown-it-mathjax3": "^5.2.0",
         "pdf-lib": "^1.17.1",
@@ -426,6 +427,8 @@
     "lru-cache": ["lru-cache@7.18.3", "", {}, "sha512-jumlc0BIUrS3qJGgIkWZsyfAM7NCWiBcCDhnd+3NNM5KbBmLTgHVfWBcg6W+rLUsIpzpERPsvwUP7CckAQSOoA=="],
 
     "markdown-it": ["markdown-it@14.1.0", "", { "dependencies": { "argparse": "^2.0.1", "entities": "^4.4.0", "linkify-it": "^5.0.0", "mdurl": "^2.0.0", "punycode.js": "^2.3.1", "uc.micro": "^2.1.0" }, "bin": { "markdown-it": "bin/markdown-it.mjs" } }, "sha512-a54IwgWPaeBCAAsv13YgmALOF1elABB08FxO9i+r4VFk5Vl4pKokRPeX8u5TCgSsPi6ec1otfLjdOpVcgbpshg=="],
+
+    "markdown-it-attrs": ["markdown-it-attrs@4.3.1", "", { "peerDependencies": { "markdown-it": ">= 9.0.0" } }, "sha512-/ko6cba+H6gdZ0DOw7BbNMZtfuJTRp9g/IrGIuz8lYc/EfnmWRpaR3CFPnNbVz0LDvF8Gf1hFGPqrQqq7De0rg=="],
 
     "markdown-it-image-size": ["markdown-it-image-size@15.0.1", "", { "dependencies": { "@types/markdown-it": "^14.1.2", "flat-cache": "^6.1.17", "image-size": "^2.0.2", "sync-fetch": "^0.5.2" }, "peerDependencies": { "markdown-it": ">= 10 < 15" }, "optionalPeers": ["markdown-it"] }, "sha512-qnnnYtXXdUsBtNyywsMpgXDGi0X4Judba0+MJFGa2GrKrE9zwWlng+3GWlv2uRRtM0BO/le3G6x1Xw/iCjiT5g=="],
 

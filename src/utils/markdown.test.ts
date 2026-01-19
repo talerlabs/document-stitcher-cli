@@ -45,6 +45,12 @@ describe("markdown", () => {
       const result = convertMarkdownToHtml(markdown);
       expect(result).toContain('<div style="page-break-after: always;"></div>');
     });
+
+    test("should support attribute list syntax (markdown-it-attrs)", () => {
+      const markdown = "### Hello {#greet .big}";
+      const result = convertMarkdownToHtml(markdown);
+      expect(result).toContain('<h3 id="greet" class="big">Hello</h3>');
+    });
   });
 
   describe("parseMarkdownIntoChunks", () => {
