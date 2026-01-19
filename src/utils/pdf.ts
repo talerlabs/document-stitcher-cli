@@ -86,6 +86,7 @@ export async function convertHtmlToPdf(
   await page.pdf({
     path: outputFilePath,
     format: "A4",
+    preferCSSPageSize: true,
     printBackground: true,
   });
 
